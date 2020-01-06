@@ -26,6 +26,6 @@ class WeatherForm(FlaskForm):
     submit = SubmitField('Add city')
 
 class SurgingSeasForm(FlaskForm):
-    city_name = StringField('Name of the city', validators=[DataRequired()])
-    how_many_degrees = StringField('Increase of the temperature (°C)', validators=[DataRequired()])
+    city_name = StringField('<h6 style="color:#4976d0">Name of the city</h6>', validators=[DataRequired()])
+    how_many_metters = StringField('<h6 class="text-danger">Increase of seas level [m]</h6>', validators=[DataRequired()])
     submit = SubmitField('Load link')

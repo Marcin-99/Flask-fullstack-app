@@ -28,9 +28,8 @@ class WeatherCard(db.Model):
 class SurgingSeasCard(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     city = db.Column(db.String(100), nullable=False)
-    temp_increase = db.Column(db.Integer, nullable=False)
-    coordinate_x = db.Column(db.Float(10), nullable=False)
-    coordinate_y = db.Column(db.Float(10), nullable=False)
+    link = db.Column(db.String(100), nullable=False)
+    lvl_increase = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):

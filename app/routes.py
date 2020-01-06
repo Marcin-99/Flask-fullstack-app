@@ -13,6 +13,19 @@ def check_for_duplicates(new_city, table):
             return True
             break
 
+def check_for_the_same_parameters(new_city, table):
+    records = table.query.all()
+    for card in records:
+        if (card.link == new_city.link) and (card.city == new_city.city) and (current_user.id == card.user_id):
+            return True
+            break
+
+def is_float(var):
+    try:
+        float(var)
+        return True
+    except ValueError:
+        return False
 
 @app.route('/weather', methods=['POST', 'GET'])
 def weather():
@@ -45,7 +58,6 @@ def weather():
                 'wind': r['wind']['speed'],
                 'user': card.user_id,
                 'id': card.id,
-                'cord': [r['coord']['lon'], r['coord']['lat']],
             }
             weather_data.append(weather)
         except KeyError:
@@ -74,7 +86,7 @@ def delete_card(card):
     return redirect(url_for('weather'))
 
 
-@app.route('/floods', methods=['POST', 'GET'])                              ##################<----------------------------TUTAJ JESTEM
+@app.route('/floods', methods=['POST', 'GET'])
 def floods():
     form = SurgingSeasForm()
 
@@ -83,10 +95,12 @@ def floods():
             url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=88e12df4038659e5d9e36114cd2599d6'
             r = requests.get(url.format(form.city_name.data)).json()
             coordinates = [r['coord']['lon'], r['coord']['lat']]
-            new_city = SurgingSeasCard(city=form.city_name.data, temp_increase=form.how_many_degrees.data,
-                                       coordinate_x=coordinates[0], coordinate_y=coordinates[1], user_id=current_user.id)
-            if check_for_duplicates(new_city, SurgingSeasCard) == True:
-                flash('You already have a link for this city.', 'danger')
+            link_for_city = f'https://www.floodmap.net/?ll={coordinates[1]},{coordinates[0]}&z=11&e={form.how_many_metters.data}'
+            new_city = SurgingSeasCard(city=form.city_name.data, link=link_for_city, lvl_increase=form.how_many_metters.data, user_id=current_user.id)
+            if check_for_the_same_parameters(new_city, SurgingSeasCard) == True:
+                flash('You already have a link with those parameters.', 'danger')
+            if is_float(form.how_many_metters.data) == False:
+                flash('"Increase of seas level" must be a number.', 'danger')
             else:
                 db.session.add(new_city)
                 db.session.commit()
@@ -100,6 +114,19 @@ def floods():
         return render_template('floods.html', form=form, data=data)
     else:
         return render_template('not_signed_in.html')
+
+
+@app.route('/delete_link/<int:link>')
+def delete_link(link):
+    link_to_delete = SurgingSeasCard.query.filter_by(id=link).first()
+    local_object = db.session.merge(link_to_delete)
+
+    db.session.delete(local_object)
+    db.session.commit()
+    db.session.close()
+    flash(f'Link for "{link_to_delete.city}" deleted successfully.', 'success')
+
+    return redirect(url_for('floods'))
 
 
 @app.route('/')

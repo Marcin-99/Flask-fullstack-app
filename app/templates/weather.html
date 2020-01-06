@@ -24,12 +24,10 @@
                         <h6>{{ city["description"] }}</h6>
                         <h6><span style="color:#7194da">Wind speed: </span>{{ city["wind"] }} km/h</h6>
                         <h6><span style="color:#7194da">Pressure: </span>{{ city["pressure"] }} h/Pa</h6>
-                        <h6>Cord: {{ city["cord"][0] }}</h6>
-                        <h6>Cord: {{ city["cord"][1] }}</h6>
                     </data>
                 </info_section>
                 <button_section class="col-md-2">
-                    <button type="button" class="close float-right col-sm-3" aria-label="Close">
+                    <button type="button" class="close" aria-label="Close">
                         <a href="{{ url_for('delete_card', card=city.id) }}">
                             <span aria-hidden="true">&times;</span>
                         </a>
