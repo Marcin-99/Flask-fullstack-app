@@ -1,17 +1,18 @@
 from flask import render_template, url_for, flash, redirect, Flask, request
 from app import app
 from app.forms import RegistrationForm, LoginForm, WeatherForm, SurgingSeasForm
-from app.models import User, WeatherCard
+from app.models import User, WeatherCard, SurgingSeasCard
 from app.__init__ import bcrypt, db
 from flask_login import login_user, logout_user, current_user
 import requests
 
-def check_for_duplicates(new_city):
-    WeatherCards = WeatherCard.query.all()
-    for card in WeatherCards:
+def check_for_duplicates(new_city, table):
+    records = table.query.all()
+    for card in records:
         if (card.city == new_city.city) and (current_user.id == card.user_id):
             return True
             break
+
 
 @app.route('/weather', methods=['POST', 'GET'])
 def weather():
@@ -19,12 +20,13 @@ def weather():
 
     if form.validate_on_submit():
         new_city = WeatherCard(city=form.city_name.data, user_id=current_user.id)
-        if check_for_duplicates(new_city) == True:
-            flash('You already have card with this city name.', 'danger')
+        if check_for_duplicates(new_city, WeatherCard) == True:
+            flash('You already have a card with this city name.', 'danger')
         else:
             db.session.add(new_city)
             db.session.commit()
             db.session.close()
+            flash(f'Card for "{form.city_name.data}" added successfully.', 'success')
         return redirect(url_for('weather'))
 
     WeatherCards = WeatherCard.query.all()
@@ -51,9 +53,13 @@ def weather():
             db.session.delete(local_object)
             db.session.commit()
             db.session.close()
-            flash(f'There is not such a city "{card.city}". Try again with another one.', 'danger')
+            flash(f'There is not such a city "{form.city_name.data}". Try again with another one.', 'danger')
 
-    return render_template('weather.html', form=form, weather_data=weather_data)
+    if current_user.is_authenticated:
+        return render_template('weather.html', form=form, weather_data=weather_data)
+    else:
+        return render_template('not_signed_in.html')
+
 
 @app.route('/delete_card/<int:card>')
 def delete_card(card):
@@ -67,35 +73,40 @@ def delete_card(card):
 
     return redirect(url_for('weather'))
 
-@app.route('/')
+
 @app.route('/floods', methods=['POST', 'GET'])                              ##################<----------------------------TUTAJ JESTEM
 def floods():
     form = SurgingSeasForm()
 
-    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=88e12df4038659e5d9e36114cd2599d6'
-
-
     if form.validate_on_submit():
         try:
-            r = requests.get(url.format(form.city_name)).json()
+            url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=88e12df4038659e5d9e36114cd2599d6'
+            r = requests.get(url.format(form.city_name.data)).json()
             coordinates = [r['coord']['lon'], r['coord']['lat']]
-            city = {
-                'city': form.city_name,
-                'how_many_degrees': form.how_many_degrees.data,
-                'coordinate_x': coordinates[0],
-                'coordinate_y': coordinates[1],
-            }
-            return redirect(url_for('floods'))
+            new_city = SurgingSeasCard(city=form.city_name.data, temp_increase=form.how_many_degrees.data,
+                                       coordinate_x=coordinates[0], coordinate_y=coordinates[1], user_id=current_user.id)
+            if check_for_duplicates(new_city, SurgingSeasCard) == True:
+                flash('You already have a link for this city.', 'danger')
+            else:
+                db.session.add(new_city)
+                db.session.commit()
+                db.session.close()
+                flash(f'Link for {form.city_name.data} added successfully.', 'success')
         except KeyError:
-            flash(f'There is not such a city. Try again with another one.', 'danger')
+            flash(f'There is not such a city "{form.city_name.data}". Try again with another one.', 'danger')
+
+    if current_user.is_authenticated:
+        data = SurgingSeasCard.query.filter(SurgingSeasCard.user_id == current_user.id)
+        return render_template('floods.html', form=form, data=data)
     else:
-        city = None
+        return render_template('not_signed_in.html')
 
-    return render_template('floods.html', form=form, city=city)
 
+@app.route('/')
 @app.route('/about')
 def about():
     return render_template('about.html')
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -112,12 +123,14 @@ def login():
             flash(f'Login unsuccessfull. Please, check your username and password.', 'danger')
     return render_template('login.html', titile='Login', form=form)
 
+
 @app.route('/logout')
 def logout():
     user = User.query.filter_by(username=current_user.username).first()
     logout_user()
     flash(f'Logout for {user.username} succesfull.', 'success')
     return redirect(url_for('about'))
+
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
@@ -130,6 +143,6 @@ def register():
         db.session.add(user)
         db.session.commit()
         db.session.close()
-        flash(f'Account has been created for {user.username}. You are now able to log in.', 'success')
+        flash(f'Account has been created for {form.username.data}. You are now able to log in.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', titile='Register', form=form)

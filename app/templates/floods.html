@@ -8,11 +8,10 @@
 
 {% block content %}
 
-{% if current_user.is_authenticated %}
 <div class="row mt-3">
-    <form class="offset-lg-4 col-lg-4 card card-body bg-light">
+    <form class="offset-lg-4 col-lg-4 card card-body bg-light" method="POST" action="">
         <h5 class="font-weight-bolder text-center" style="color:#4976d0">Which sea level will we lock in?</h5>
-        <data class="row" method="POST" action="">
+        <data class="row">
             {{ form.hidden_tag() }}
             <city class="col-lg-12">
                 {{ form.city_name.label(class="form-control-label") }}
@@ -28,21 +27,14 @@
             </p>
         </data>
     </form>
-    {% if city %}
-    <city class="offset-lg-4 col-lg-4 card card-body bg-light mt-3">
-        <h5>City: {{ city.city }}</h5>
+    {% for card in data %}
+    <city class="offset-lg-4 col-lg-4 card card-body bg-light mt-3 text-center">
+        {% formated_link="https://choices.climatecentral.org/#12/ {{ coordinate_y }}/
+        {{ coordinate_x }}?compare=temperatures&carbon-end-yr=2100&scenario-a=historic&scenario-b=warming-
+        {{ card.temp_increase }}" %}
+        <h5><a style="color:#4976d0" href={{ formated_link }}>{{ card.city }}</a>, <span class="danger">{{ card.temp_increase }}°C</span></h5>
     </city>
-    {% endif %}
+    {% endfor %}
 </div>
-
-<!--------------------------------------------------------------------------------------------------------------------->
-
-{% else %}
-<div class="row mt-3">
-    <div class="col-md-12 alert alert-primary">
-        To see this content, you need to log in first.
-    </div>
-</div>
-{% endif %}
 
 {% endblock content %}
