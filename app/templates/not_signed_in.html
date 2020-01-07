@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block menubar %}
+<a class="col-lg-1 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('about') }}">About</a>
+<a class="col-lg-1 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('weather') }}">Weather</a>
+<a class="col-lg-3 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('floods') }}">Surging Seas</a>
+{% endblock menubar %}
+
+{% block content %}
+
+<div class="row mt-3">
+    <div class="col-md-12 alert alert-primary">
+        To see this content, you need to log in first.
+    </div>
+</div>
+
+{% endblock content %}
