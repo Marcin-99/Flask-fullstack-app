@@ -5,27 +5,8 @@ from app.models import User, WeatherCard, SurgingSeasCard
 from app.__init__ import bcrypt, db
 from flask_login import login_user, logout_user, current_user
 import requests
+from app.my_functions import check_for_duplicates, check_for_the_same_parameters, is_int
 
-def check_for_duplicates(new_city, table):
-    records = table.query.all()
-    for card in records:
-        if (card.city == new_city.city) and (current_user.id == card.user_id):
-            return True
-            break
-
-def check_for_the_same_parameters(new_city, table):
-    records = table.query.all()
-    for card in records:
-        if (card.link == new_city.link) and (card.city == new_city.city) and (current_user.id == card.user_id):
-            return True
-            break
-
-def is_int(var):
-    try:
-        int(var)
-        return True
-    except ValueError:
-        return False
 
 @app.route('/weather', methods=['POST', 'GET'])
 def weather():
@@ -173,3 +154,30 @@ def register():
         flash(f'Account has been created for {form.username.data}. You are now able to log in.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', titile='Register', form=form)
+
+
+@app.route('/delete_account/<int:user>')
+def delete_account(user):
+    links_to_delete = SurgingSeasCard.query.filter_by(user_id=user)
+    for link in links_to_delete:
+        local_object = db.session.merge(link)
+        db.session.delete(local_object)
+        db.session.commit()
+        db.session.close()
+
+    cards_to_delete = WeatherCard.query.filter_by(user_id=user)
+    for card in cards_to_delete:
+        local_object = db.session.merge(card)
+        db.session.delete(local_object)
+        db.session.commit()
+        db.session.close()
+
+    acc_to_delete = User.query.filter_by(id=user).first()
+    local_object = db.session.merge(acc_to_delete)
+    db.session.delete(local_object)
+    db.session.commit()
+    db.session.close()
+
+    flash(f'Account for "{acc_to_delete.username}" deleted successfully.', 'success')
+
+    return redirect(url_for('about'))
