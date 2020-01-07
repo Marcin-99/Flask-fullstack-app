@@ -20,9 +20,9 @@ def check_for_the_same_parameters(new_city, table):
             return True
             break
 
-def is_float(var):
+def is_int(var):
     try:
-        float(var)
+        int(var)
         return True
     except ValueError:
         return False
@@ -99,8 +99,8 @@ def floods():
             new_city = SurgingSeasCard(city=form.city_name.data, link=link_for_city, lvl_increase=form.how_many_metters.data, user_id=current_user.id)
             if check_for_the_same_parameters(new_city, SurgingSeasCard) == True:
                 flash('You already have a link with those parameters.', 'danger')
-            if is_float(form.how_many_metters.data) == False:
-                flash('"Increase of seas level" must be a number.', 'danger')
+            elif is_int(form.how_many_metters.data) == False:
+                flash('"Increase of seas level" must be an integer.', 'danger')
             else:
                 db.session.add(new_city)
                 db.session.commit()

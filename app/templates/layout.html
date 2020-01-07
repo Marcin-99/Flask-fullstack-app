@@ -17,7 +17,7 @@
             <!------------------------------------------------------------------------------------------------------------->
 
             {% if current_user.is_authenticated %}
-                <div class="offset-lg-4 col-lg-2 text-lg-right text-light">{{ current_user.username }}</div>
+            <div class="offset-lg-4 col-lg-2 text-lg-right text-light"><h7 style="color:#ffffcc">{{ current_user.username }}</h7></div>
                 <a class="col-lg-1 text-light" style="text-decoration: none" href="{{ url_for('logout') }}">Logout</a>
             {% else %}
                 <a class="offset-lg-5 col-lg-1 text-light" style="text-decoration: none" href="{{ url_for('login') }}">Login</a>

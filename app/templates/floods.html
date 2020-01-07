@@ -3,7 +3,7 @@
 {% block menubar %}
 <a class="col-lg-1 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('about') }}">About</a>
 <a class="col-lg-1 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('weather') }}">Weather</a>
-<a class="col-lg-3 font-weight-bolder text-muted" style="text-decoration: none" href="{{ url_for('floods') }}">Surging Seas</a>
+<a class="col-lg-3 font-weight-bolder text-warning" style="text-decoration: none" href="{{ url_for('floods') }}">Surging Seas</a>
 {% endblock menubar %}
 
 {% block content %}
@@ -25,6 +25,9 @@
                 <br>
                 {{ form.submit(class="btn btn-outline-info") }}
             </p>
+            <h8 class="col-lg-12 text-info">
+                Note: Data says, that by 2100 we will reach increase of 0.69[m].
+            </h8>
         </data>
     </form>
     {% for card in data %}
