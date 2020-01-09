@@ -10,25 +10,32 @@ from app.my_functions import check_for_duplicates, check_for_the_same_parameters
 
 @app.route('/weather', methods=['POST', 'GET'])
 def weather():
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=88e12df4038659e5d9e36114cd2599d6'
     form = WeatherForm()
 
     if form.validate_on_submit():
         new_city = WeatherCard(city=form.city_name.data, user_id=current_user.id)
         if check_for_duplicates(new_city, WeatherCard) == True:
-            flash('You already have a card with this city name.', 'danger')
+            flash(f'You already have a card for {form.city_name.data}.', 'danger')
         else:
-            db.session.add(new_city)
-            db.session.commit()
-            db.session.close()
-            flash(f'Card for "{form.city_name.data}" added successfully.', 'success')
+            try:
+                r = requests.get(url.format(new_city.city)).json()
+                weather = r['weather'][0]['description']
+                db.session.add(new_city)
+                db.session.commit()
+                db.session.close()
+                flash(f'Card for "{form.city_name.data}" added successfully.', 'success')
+            except KeyError:
+                flash(f'There is not such a city "{form.city_name.data}". Try again with another one.', 'danger')
         return redirect(url_for('weather'))
 
     WeatherCards = WeatherCard.query.all()
-    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=88e12df4038659e5d9e36114cd2599d6'
     weather_data = []
 
     for card in WeatherCards:
         r = requests.get(url.format(card.city)).json()
+
+        '''I am checking database once again, because sometimes records go in when they shouldn't.'''
         try:
             weather = {
                 'city': card.city,
@@ -46,7 +53,6 @@ def weather():
             db.session.delete(local_object)
             db.session.commit()
             db.session.close()
-            flash(f'There is not such a city "{form.city_name.data}". Try again with another one.', 'danger')
 
     if current_user.is_authenticated:
         return render_template('weather.html', form=form, weather_data=weather_data)
@@ -89,6 +95,7 @@ def floods():
                 flash(f'Link for {form.city_name.data} added successfully.', 'success')
         except KeyError:
             flash(f'There is not such a city "{form.city_name.data}". Try again with another one.', 'danger')
+        return redirect(url_for('floods'))
 
     if current_user.is_authenticated:
         data = SurgingSeasCard.query.filter(SurgingSeasCard.user_id == current_user.id)
