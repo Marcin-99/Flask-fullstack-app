@@ -1,6 +1,6 @@
 # Flask-fullstack-app
 
-The most important frameworks and librares used:
+The most important librares used:
 Flask, requests, SQLAlchemy, wtforms.
 Frontend made with HTML5 and Bootstrap.
 
