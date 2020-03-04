@@ -70,7 +70,7 @@ def delete_account(user):
     db.session.delete(local_object)
     db.session.commit()
     db.session.close()
-    logout_user()   #for some reason next registered user is automaticly authenticated without this
+    logout_user()   #for some reason next registered user is automaticly authenticated without logout
 
     flash(f'Account for "{acc_to_delete.username}" deleted successfully.', 'success')
 
