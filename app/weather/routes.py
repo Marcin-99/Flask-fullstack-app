@@ -1,5 +1,5 @@
 from flask import render_template, url_for, flash, redirect, Flask, request
-from app import app, bcrypt, db
+from app import bcrypt, db
 from app.weather.forms import WeatherForm
 from app.models import WeatherCard
 from flask_login import current_user

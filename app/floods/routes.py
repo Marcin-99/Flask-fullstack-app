@@ -1,5 +1,5 @@
 from flask import render_template, url_for, flash, redirect, request
-from app import app, db
+from app import db
 from app.floods.forms import SurgingSeasForm
 from app.models import SurgingSeasCard
 from flask_login import current_user
