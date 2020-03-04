@@ -1,6 +1,7 @@
 from app import db, manage_login
 from flask_login import UserMixin
 
+
 @manage_login.user_loader
 def find_user(id):
     return User.query.get(id)

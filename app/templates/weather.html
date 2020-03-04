@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 
 {% block menubar %}
-<a class="col-lg-1 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('about') }}">About</a>
-<a class="col-lg-1 font-weight-bolder text-warning" style="text-decoration: none" href="{{ url_for('weather') }}">Weather</a>
-<a class="col-lg-3 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('floods') }}">Surging Seas</a>
+<a class="col-lg-1 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('about_bp.about') }}">About</a>
+<a class="col-lg-1 font-weight-bolder text-warning" style="text-decoration: none" href="{{ url_for('weather_bp.weather') }}">Weather</a>
+<a class="col-lg-3 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('floods_bp.floods') }}">Surging Seas</a>
 {% endblock menubar %}
 
 {% block content %}
@@ -28,7 +28,7 @@
                 </info_section>
                 <button_section class="col-md-2">
                     <button type="button" class="close" aria-label="Close">
-                        <a href="{{ url_for('delete_card', card=city.id) }}">
+                        <a href="{{ url_for('users_bp.delete_card', card=city.id) }}">
                             <span aria-hidden="true">&times;</span>
                         </a>
                     </button>

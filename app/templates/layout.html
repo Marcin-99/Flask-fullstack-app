@@ -23,16 +23,16 @@
                 <a href="#collapseTarget" data-toggle="collapse" class="text-light font-weight-bolder" style="text-decoration: none">{{ current_user.username }}</a>
                     <user_section>
                         <div class="row">
-                            <a id="collapseTarget" class="col-12 collapse text-light" style="text-decoration: none" href="{{ url_for('delete_account', user=current_user.id) }}">Delete Account</a>
+                            <a id="collapseTarget" class="col-12 collapse text-light" style="text-decoration: none" href="{{ url_for('users_bp.delete_account', user=current_user.id) }}">Delete Account</a>
                         </div>
                         <div class="row">
-                            <a id="collapseTarget" class="col-12 collapse text-light" style="text-decoration: none" href="{{ url_for('logout') }}">Logout</a>
+                            <a id="collapseTarget" class="col-12 collapse text-light" style="text-decoration: none" href="{{ url_for('users_bp.logout') }}">Logout</a>
                         </div>
                     </user_section>
             </right_nav>
             {% else %}
-                <a class="offset-lg-5 col-lg-1 text-light" style="text-decoration: none" href="{{ url_for('login') }}">Login</a>
-                <a class="col-lg-1 text-light" style="text-decoration: none" href="{{ url_for('register') }}">Register</a>
+                <a class="offset-lg-5 col-lg-1 text-light" style="text-decoration: none" href="{{ url_for('users_bp.login') }}">Login</a>
+                <a class="col-lg-1 text-light" style="text-decoration: none" href="{{ url_for('users_bp.register') }}">Register</a>
             {% endif %}
         </header>
         {% with messages = get_flashed_messages(with_categories=true) %}

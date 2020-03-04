@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 
 {% block menubar %}
-<a class="col-lg-1 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('about') }}">About</a>
-<a class="col-lg-1 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('weather') }}">Weather</a>
-<a class="col-lg-3 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('floods') }}">Surging Seas</a>
+<a class="col-lg-1 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('about_bp.about') }}">About</a>
+<a class="col-lg-1 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('weather_bp.weather') }}">Weather</a>
+<a class="col-lg-3 font-weight-bolder text-light" style="text-decoration: none" href="{{ url_for('floods_bp.floods') }}">Surging Seas</a>
 {% endblock menubar %}
 
 {% block content %}
@@ -58,7 +58,7 @@
     </form>
     <div class="m-3">
         <small class="text-muted">
-            Already have an account? <a class="ml-2" href="{{ url_for('login') }}">Sign in</a>
+            Already have an account? <a class="ml-2" href="{{ url_for('users_bp.login') }}">Sign in</a>
         </small>
     </div>
 </div>

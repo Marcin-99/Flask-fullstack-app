@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
-from app.models import User, WeatherCard
+from app.models import User
+
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=4, max=20)])
@@ -20,12 +21,3 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
-
-class WeatherForm(FlaskForm):
-    city_name = StringField('', validators=[DataRequired()])
-    submit = SubmitField('Add city')
-
-class SurgingSeasForm(FlaskForm):
-    city_name = StringField('<h6 style="color:#4976d0">Name of the city</h6>', validators=[DataRequired()])
-    how_many_metters = StringField('<h6 class="text-danger">Increase of seas level [m]</h6>', validators=[DataRequired()])
-    submit = SubmitField('Load link')
