@@ -35,7 +35,7 @@
         <link_section class="row">
             <h5 class="col-8 text-left"><a style="color:#4976d0" href="{{ card.link }}" target="_blank">{{ card.city }}</a>, <span class="text-danger">{{ card.lvl_increase }}m</span></h5>
             <button class="col-4 text-right close" aria-label="Close">
-                <a href="{{ url_for('users_bp.delete_link', link=card.id) }}">
+                <a href="{{ url_for('floods_bp.delete_link', link=card.id) }}">
                     <span aria-hidden="true">&times;</span>
                 </a>
             </button>
